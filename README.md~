@@ -17,4 +17,4 @@ converting infragram vid files to NDVI
 
 - then, recombine the extracted frames into a movie:
 
-``` ffmpeg -qscale 5 -r 20 -b 9600 -i ./NDVIFolder/ndvi_image-%04d.png movie.mp4
+``` ffmpeg -qscale 5 -r 20 -b 9600 -i ./outFolder/ndvi_image-%04d.png movie.mp4
