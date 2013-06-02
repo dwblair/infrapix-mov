@@ -103,7 +103,7 @@ def ndvi(imageInPath,imageOutPath):
 		              aspect = 'equal',
 		              #interpolation="nearest"
 		             )
-	# Add colorbar
+	# Add colorbar 
 	#make an axis for colorbar
 	#cax = fig.add_axes([0.95,0.05,0.025,0.9])
 	cax = fig.add_axes([0.83,0.05,0.05,0.85]) #left, bottom, width, height

@@ -117,7 +117,7 @@ def ndvi(imageInPath,imageOutPath):
 
 	#cbar = fig.colorbar(axes_img)
 	#cbytick_obj = plt.getp(cbar.ax.axes, 'yticklabels')                #tricky
-	cbar.ax.tick_params(labelsize=1.5) 
+	cbar.ax.tick_params(labelsize=2) 
 	#cbar.ax.yaxis.set_ticks_position('left')
 
 
