@@ -143,7 +143,7 @@ def ndvi(imageInPath,imageOutPath):
            )
 
 	#needed to clear memory if used to process many frames ...
-	#plt.show()
+	plt.show()
 	fig.clf()
 	plt.close()
 	gc.collect()

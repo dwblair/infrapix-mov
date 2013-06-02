@@ -81,7 +81,7 @@ def ndvi(imageInPath,imageOutPath):
 
 	img_w,img_h=img.size
 	vmin = -.1
-	vmax = 1.
+	vmax = .4
 	
 	dpi=600. #need this to be floating point!
 	fig_w=img_w/dpi
