@@ -28,6 +28,8 @@ import numpy as numpy
 
 from PIL import Image
 
+import gc
+
 def nir(imageInPath,imageOutPath):
 	img=Image.open(imageInPath)
 	imgN, imgG, imgB = img.split() #get channels
@@ -48,41 +50,33 @@ def nir(imageInPath,imageOutPath):
 	#fig.colorbar(nir_plot)
 	fig.savefig(imageOutPath)
 
+	#needed to clear memory if used to process many frames ...
+	fig.clf()
+	plt.close()
+	gc.collect()
+
 def ndvi(imageInPath,imageOutPath):
 	img=Image.open(imageInPath)
 
 	imgN, imgG, imgB = img.split() #get channels
 	arrR = numpy.asarray(imgN).astype('float64')
 	arrB = numpy.asarray(imgB).astype('float64')
-	"""img = mpimg.imread(imageInPath)
-	red=img[:,:,0]
-	green=img[:,:,1]
-	blue=img[:,:,2]
 
-	arrR=np.asarray(red).astype('float64')
-	arrG=np.asarray(green).astype('float64')
-	arrB=np.asarray(blue).astype('float64')
-	"""
 	num=arrR - arrB
 	num=(arrR - arrB)
 	denom=(arrR + arrB)
 	arr_ndvi=num/denom
 
-	#
 	img_w,img_h=img.size
-	#dpi = 600
 	vmin = -1.
 	vmax = 1.
-	#print img_w,img_h
 	
-	dpi=600. #need this decimal!
+	dpi=600. #need this to be floating point!
 	fig_w=img_w/dpi
 	fig_h=img_h/dpi
-	#dpi=80
 	print fig_w,fig_h
 	fig=plt.figure(figsize=(fig_w,fig_h),dpi=dpi)
-	#fig=plt.figure(figsize=(fig_w,))
-	#fig=plt.figure()
+
 	fig.set_frameon(False)
 
 	ax_rect = [0.0, #left
@@ -105,22 +99,18 @@ def ndvi(imageInPath,imageOutPath):
 		             )
 	# Add colorbar 
 	#make an axis for colorbar
-	#cax = fig.add_axes([0.95,0.05,0.025,0.9])
 	cax = fig.add_axes([0.83,0.05,0.05,0.85]) #left, bottom, width, height
-	#cax.yaxis.set_ticks_position('left')
-#	cax = fig.add_axes([0.95,
-#		            0.05,
-#		            0.025,
-#		            0.90]
-#		           ) #fill the whole figure
+	
 	cbar = fig.colorbar(axes_img, cax=cax)  #this resizes the axis
 
-	#cbar = fig.colorbar(axes_img)
+
 	#cbytick_obj = plt.getp(cbar.ax.axes, 'yticklabels')                #tricky
 	cbar.ax.tick_params(labelsize=2) 
+
+	#position of the colorbar
 	#cbar.ax.yaxis.set_ticks_position('left')
-
-
+	
+	#color of the colorbar text
 	#plt.setp(cbytick_obj, color='r')
 
 	
@@ -129,7 +119,11 @@ def ndvi(imageInPath,imageOutPath):
             bbox_inches='tight',
             pad_inches=0.0, 
            )
-	
+
+	#needed to clear memory if used to process many frames ...
+	fig.clf()
+	plt.close()
+	gc.collect()
 	#plt.show()
 
 	
