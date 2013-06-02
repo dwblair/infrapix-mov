@@ -93,6 +93,7 @@ def ndvi(imageInPath,imageOutPath):
 	ax.yaxis.set_ticklabels([])
 	ax.xaxis.set_ticklabels([])   
 	ax.set_axis_off()
+	ax.axes.get_yaxis().set_visible(False)
 	ax.patch.set_alpha(0.0)
 
 	axes_img = ax.imshow(arr_ndvi,
@@ -104,36 +105,44 @@ def ndvi(imageInPath,imageOutPath):
 		             )
 	# Add colorbar
 	#make an axis for colorbar
-	cax = fig.add_axes([0.95,
-		            0.05,
-		            0.025,
-		            0.90]
-		           ) #fill the whole figure
+	#cax = fig.add_axes([0.95,0.05,0.025,0.9])
+	cax = fig.add_axes([0.83,0.05,0.05,0.85]) #left, bottom, width, height
+	#cax.yaxis.set_ticks_position('left')
+#	cax = fig.add_axes([0.95,
+#		            0.05,
+#		            0.025,
+#		            0.90]
+#		           ) #fill the whole figure
 	cbar = fig.colorbar(axes_img, cax=cax)  #this resizes the axis
 
-	cbytick_obj = plt.getp(cbar.ax.axes, 'yticklabels')                #tricky
-	plt.setp(cbytick_obj, color='r')
+	#cbar = fig.colorbar(axes_img)
+	#cbytick_obj = plt.getp(cbar.ax.axes, 'yticklabels')                #tricky
+	cbar.ax.tick_params(labelsize=1.5) 
+	#cbar.ax.yaxis.set_ticks_position('left')
 
-	#fig.tight_layout(pad=0)
+
+	#plt.setp(cbytick_obj, color='r')
+
+	
 	fig.savefig(imageOutPath, 
             dpi=dpi,
             bbox_inches='tight',
             pad_inches=0.0, 
            )
-	#ndvi_plot = ax.imshow(arr_ndvi, cmap=plt.cm.spectral, interpolation="nearest")
-	#ndvi_plot = ax.imshow(arr_ndvi, cmap=custom_cmap, interpolation="nearest")
+	
+	#plt.show()
 
-	#fig.colorbar(ndvi_plot)
-	plt.show()
-
-	#fig.savefig(imageOutPath)
+	
 
 
 
 outdir='./NDVIFolder'
 
+#indir='~/infpx-mov/videofolder/*.png'
+indir='/home/dwblair/infpx-mov/vidfolder/*.png'
 import glob
-files= sorted(glob.glob('./outFolder/*.png'))
+files= sorted(glob.glob(indir))
+print files
 for f in files:
 	inFilePath=f
 	inFileName= os.path.basename(f)
