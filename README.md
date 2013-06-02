@@ -22,5 +22,5 @@ python convertMovie.py
 - then, recombine the extracted frames into a movie:
 
 ``` 
-ffmpeg -qscale 5 -r 20 -b 9600 -i ./NDVIFolder/ndvi_image-%04d.png movie.mp4
+ffmpeg -qscale 5 -i ./NDVIFolder/ndvi_image-%04d.png movie.mp4
 ```
