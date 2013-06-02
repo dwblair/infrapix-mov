@@ -37,6 +37,7 @@ def nir(imageInPath,imageOutPath):
 	#red=img[:,:,0]
 	#arrR=numpy.asarray(red).astype('float64')
 
+	
 	arr_nir=arrR
 
 	fig=plt.figure()
@@ -56,20 +57,31 @@ def nir(imageInPath,imageOutPath):
 	gc.collect()
 
 def ndvi(imageInPath,imageOutPath):
+
+	#img = mpimg.imread(imageInPath)
+	#imgN=img[:,:,0]
+	#imgB=img[:,:,2]
+
 	img=Image.open(imageInPath)
+	imgR, imgB, imgG = img.split() #get channels
+	#imgR, imgG, imgB = img.split() #get channels
 
-	imgN, imgG, imgB = img.split() #get channels
-	arrR = numpy.asarray(imgN).astype('float64')
+	arrR = numpy.asarray(imgR).astype('float64')
+	arrG = numpy.asarray(imgG).astype('float64')
 	arrB = numpy.asarray(imgB).astype('float64')
+	
 
-	num=arrR - arrB
 	num=(arrR - arrB)
 	denom=(arrR + arrB)
+
 	arr_ndvi=num/denom
 
+	#plt.histogram(arrR)
+	#plt.show()
+
 	img_w,img_h=img.size
-	vmin = -1.
-	vmax = 1.
+	vmin = -.1
+	vmax = .4
 	
 	dpi=600. #need this to be floating point!
 	fig_w=img_w/dpi
@@ -95,8 +107,15 @@ def ndvi(imageInPath,imageOutPath):
 		              vmin = vmin,
 		              vmax = vmax,
 		              aspect = 'equal',
-		              #interpolation="nearest"
+		              interpolation="nearest"
 		             )
+
+#	axes_img = ax.imshow(arr_ndvi,
+#		              cmap=plt.cm.spectral, 
+#		              aspect = 'equal',
+#		              interpolation="nearest"
+#		             )
+
 	# Add colorbar 
 	#make an axis for colorbar
 	cax = fig.add_axes([0.83,0.05,0.05,0.85]) #left, bottom, width, height
@@ -113,7 +132,10 @@ def ndvi(imageInPath,imageOutPath):
 	#color of the colorbar text
 	#plt.setp(cbytick_obj, color='r')
 
-	
+	#diagnostic
+	#print arr_ndvi
+
+
 	fig.savefig(imageOutPath, 
             dpi=dpi,
             bbox_inches='tight',
@@ -121,19 +143,21 @@ def ndvi(imageInPath,imageOutPath):
            )
 
 	#needed to clear memory if used to process many frames ...
+	#plt.show()
 	fig.clf()
 	plt.close()
 	gc.collect()
-	#plt.show()
+	
 
 	
 
 
 
-outdir='./NDVIFolder'
+outdir='./NDVIFolderBeePondFuschia4'
 
 #indir='~/infpx-mov/videofolder/*.png'
-indir='/home/dwblair/infpx-mov/vidfolder/*.png'
+indir='/home/dwblair/infpx-mov/beePondFuschiaPNG/*.png'
+#indir='/home/dwblair/infrapix-mov/riverFolder/*.jpg'
 import glob
 files= sorted(glob.glob(indir))
 print files
