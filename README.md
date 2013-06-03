@@ -17,7 +17,7 @@ imgR, imgG, imgB = img.split() #get channels from NBG
 
 ## Usage
 
-You can run the python script to convert to NDVI on the command line.  The script has the folllowing options:
+You can run the python script to convert NGB or NBG images in a specified input directory to NDVI in a specified output directory by invoking it on the command line. 
 
 ```
 python processNGB.py inputdir outputdir vmin vmax histogramOption
