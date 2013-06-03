@@ -13,31 +13,24 @@
 #along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 
-# ffmpeg -i inputfile.avi -r 1 -f image2 image-%3d.jpeg
-# ffmpeg -qscale 5 -r 20 -b 9600 -i img%04d.png movie.mp4
-
 import os
 import sys
-import matplotlib
-#matplotlib.use('Agg')
 
-from matplotlib import pyplot
 import matplotlib.image as mpimg
 import matplotlib.pyplot as plt
-import numpy as numpy
 
+import numpy as numpy
 from PIL import Image
 
 import gc
+
+# function for generating NIR imagery from NGB input files
 
 def nir(imageInPath,imageOutPath):
 	img=Image.open(imageInPath)
 	imgN, imgG, imgB = img.split() #get channels
 	arrR = numpy.asarray(imgN).astype('float64')
-	#red=img[:,:,0]
-	#arrR=numpy.asarray(red).astype('float64')
 
-	
 	arr_nir=arrR
 
 	fig=plt.figure()
@@ -56,22 +49,17 @@ def nir(imageInPath,imageOutPath):
 	plt.close()
 	gc.collect()
 
-def ndvi(imageInPath,imageOutPath):
 
-	#img = mpimg.imread(imageInPath)
-	#imgN=img[:,:,0]
-	#imgB=img[:,:,2]
+# function for generating NDVI imagery from NGB or NBG input files
+def ndvi(imageInPath,imageOutPath,vmin,vmax,histogramOption):
 
 	img=Image.open(imageInPath)
-	imgR, imgB, imgG = img.split() #get channels
-	#imgR, imgG, imgB = img.split() #get channels
+	imgR, imgB, imgG = img.split() #get channels from NGB
+	#imgR, imgG, imgB = img.split() #get channels from NBG
 
 	arrR = numpy.asarray(imgR).astype('float64')
 	arrG = numpy.asarray(imgG).astype('float64')
 	arrB = numpy.asarray(imgB).astype('float64')
-	
-
-	#print arrR.max()
 
 	num=(arrR - arrB)
 	denom=(arrR + arrB)
@@ -79,21 +67,12 @@ def ndvi(imageInPath,imageOutPath):
 	arr_ndvi=num/denom
 
 	if arr_ndvi.max()>0:
-		#plt.histogram(arrR)
-		#plt.show()
-
+		
 		img_w,img_h=img.size
-		vmin = -.1
-		vmax = .4
 	
 		dpi=600. #need this to be floating point!
 		fig_w=img_w/dpi
 		fig_h=img_h/dpi
-		#print fig_w,fig_h
-
-
-
-
 
 		fig=plt.figure(figsize=(fig_w,fig_h),dpi=dpi)
 
@@ -110,6 +89,8 @@ def ndvi(imageInPath,imageOutPath):
 		ax.axes.get_yaxis().set_visible(False)
 		ax.patch.set_alpha(0.0)
 
+
+
 		axes_img = ax.imshow(arr_ndvi,
 				          cmap=plt.cm.spectral, 
 				          vmin = vmin,
@@ -118,59 +99,58 @@ def ndvi(imageInPath,imageOutPath):
 				          interpolation="nearest"
 				         )
 
+#		axes_img = ax.imshow(arr_ndvi,
+#				  cmap=plt.cm.spectral, 
+#				  aspect = 'equal',
+#				  interpolation="nearest"
+#				 )
 
-		x=arr_ndvi.ravel()
-		a = plt.axes([.05,.1,.18,.18], axisbg='y')
-		bins=numpy.arange(-1,1.1,.1)
-		n, bins, patches = plt.hist(x, bins, normed=1,linewidth=.2)
-		plt.setp(patches, 'facecolor', 'w', 'alpha', 0.75)
-		plt.setp(a,xticks=[-1,0,1],yticks=[])
-		plt.setp(a,xticks=[],yticks=[])
-		plt.xticks(fontsize=2)
 
-		x=arrR.ravel()
-		a = plt.axes([.05,.7,.18,.18], axisbg='y')
-		bins=numpy.arange(0,255,10)
-		n, bins, patches = plt.hist(x, bins, normed=1,linewidth=.2)
-		plt.setp(patches, 'facecolor', 'r', 'alpha', 0.75)
-		plt.setp(a,xticks=[0,120,255],yticks=[])
-		plt.setp(a,xticks=[],yticks=[])
-		plt.xticks(fontsize=2)
+		if histogramOption==1:
 
-		x=arrB.ravel()
-		a = plt.axes([.05,.4,.18,.18], axisbg='y')
-		bins=numpy.arange(0,255,10)
-		n, bins, patches = plt.hist(x, bins, normed=1,linewidth=.2)
-		plt.setp(patches, 'facecolor', 'b', 'alpha', 0.75)
-		plt.setp(a,xticks=[0,120,255],yticks=[])
-		plt.setp(a,xticks=[],yticks=[])
-		plt.xticks(fontsize=2)
+			#plot the Red histogram
+			x=arrR.ravel()
+			a = plt.axes([.05,.7,.18,.18], axisbg='y')
+			bins=numpy.arange(0,255,8)
+			n, bins, patches = plt.hist(x, bins, normed=1,linewidth=.2)
+			plt.setp(patches, 'facecolor', 'r', 'alpha', 0.75)
+			plt.setp(a,xticks=[0,120,255],yticks=[])
+			plt.setp(a,xticks=[],yticks=[])
+			plt.xticks(fontsize=2)
 
-	#	axes_img = ax.imshow(arr_ndvi,
-	#		              cmap=plt.cm.spectral, 
-	#		              aspect = 'equal',
-	#		              interpolation="nearest"
-	#		             )
+			#plot the Blue histogram
+			x=arrB.ravel()
+			a = plt.axes([.05,.4,.18,.18], axisbg='y')
+			bins=numpy.arange(0,255,8)
+			n, bins, patches = plt.hist(x, bins, normed=1,linewidth=.2)
+			plt.setp(patches, 'facecolor', 'b', 'alpha', 0.75)
+			plt.setp(a,xticks=[0,120,255],yticks=[])
+			plt.setp(a,xticks=[],yticks=[])
+			plt.xticks(fontsize=2)
+
+			#plot the NDVI histogram
+			x=arr_ndvi.ravel()
+			a = plt.axes([.05,.1,.18,.18], axisbg='y')
+			bins=numpy.arange(-1,1,.01)
+			n, bins, patches = plt.hist(x, bins, normed=1,linewidth=.2)
+			plt.setp(patches, 'facecolor', 'w', 'alpha', 0.75)
+			plt.setp(a,xticks=[-1,0,1],yticks=[])
+			plt.setp(a,xticks=[],yticks=[])
+			plt.xticks(fontsize=2)
+
 
 		# Add colorbar 
 		#make an axis for colorbar
 		cax = fig.add_axes([0.8,0.05,0.05,0.85]) #left, bottom, width, height
-	
 		cbar = fig.colorbar(axes_img, cax=cax)  #this resizes the axis
-
-
-		#cbytick_obj = plt.getp(cbar.ax.axes, 'yticklabels')                #tricky
-		cbar.ax.tick_params(labelsize=2) 
+		cbar.ax.tick_params(labelsize=2) #this changes the font size on the axis
 
 		#position of the colorbar
 		#cbar.ax.yaxis.set_ticks_position('left')
 	
 		#color of the colorbar text
+		#cbytick_obj = plt.getp(cbar.ax.axes, 'yticklabels')                #tricky
 		#plt.setp(cbytick_obj, color='r')
-
-		#diagnostic
-		#print arr_ndvi
-
 
 		fig.savefig(imageOutPath, 
 		        dpi=dpi,
@@ -178,29 +158,37 @@ def ndvi(imageInPath,imageOutPath):
 		        pad_inches=0.0, 
 		       )
 
-		#plt.show()
-		#needed to clear memory if used to process many frames ...
-		#plt.show()
+		#plt.show()  #show the plot after saving
 		fig.clf()
 		plt.close()
 		gc.collect()
+
 	
+###### testing the code #######
 
-
-
-indir = str(sys.argv[1])
-outdir = str(sys.argv[2])
-
-
+indir = str(sys.argv[1])  #the input directory
+outdir = str(sys.argv[2]) #the output directory
+VMIN = float(sys.argv[3]) #minimum value for the colorbar
+VMAX = float(sys.argv[4]) #max value for the colorbar
+histogramOption = int(sys.argv[5]) #whether to include histograms of R, B, and NDVI -- 0: no histogram, 1: include histogram
 
 import glob
-indir=indir+'*'
+
+indir=indir+'*' #add all files in the inputdirectory to the list
+
+# get the files from the directory, and sort them in case we're making a movie
 files= sorted(glob.glob(indir))
-print files
+
+print "Detected ",len(files), "files in", str(indir)
+
+#process all the files
+index=0
 for f in files:
+	index=index+1 #update the index
 	inFilePath=f
 	inFileName= os.path.basename(f)
+	print "File ",index," of ",len(files),":",inFilePath
 	outFileName='ndvi_'+inFileName
 	outFilePath= os.path.join(outdir,outFileName)
-	ndvi(inFilePath,outFilePath)
-	print outFilePath
+	ndvi(inFilePath,outFilePath,VMIN,VMAX,histogramOption)
+	print "---->", outFilePath
