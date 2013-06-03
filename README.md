@@ -11,7 +11,20 @@ converting infragram vid files to NDVI
 ffmpeg -i inputMovie.avi  -f image2 ./outFolder/image-%04d.png
 ```
 
-- then, run the python script to convert to NDVI.  The script has INPUTDIR, OUTPUTDIR, VMIN, MAX, histogramOPtion as command line arguments.  INPUTDIR: the input directory of images -- only the images you want to process.  OUTPUTDIR: where you'd like the output images.  VMIN, VMAX: the min/max values to display in the colormap of the NDVI output.  histogramOption:  1=show, 0=don't show histograms of R, B, and NDVI overlaid on the result image.  For example,
+- then, run the python script to convert to NDVI.  The script has the folllowing options:
+
+```
+python processNGB.py inputdir outputdir vmin vmax histogramOption
+
+```
+
+- INPUTDIR: the input directory of images -- only the images you want to process.
+
+- OUTPUTDIR: where you'd like the output images.
+
+- VMIN, VMAX: the min/max values to display in the colormap of the NDVI output. 
+ 
+- histogramOption:  1=show, 0=don't show histograms of R, B, and NDVI overlaid on the result image.  For example,
 
 ``` 
 python processNGB.py ../infpx-mov/vidfolder/ ./out6/ .1 .8 1
