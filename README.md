@@ -15,13 +15,9 @@ and uncomment the line that reads:
 imgR, imgG, imgB = img.split() #get channels from NBG
 ```
 
-In order to process video files, first, extract all the frames into a folder:
+## Usage
 
-``` 
-ffmpeg -i inputMovie.avi  -f image2 ./outFolder/image-%04d.png
-```
-
-- then, run the python script to convert to NDVI.  The script has the folllowing options:
+You can run the python script to convert to NDVI on the command line.  The script has the folllowing options:
 
 ```
 python processNGB.py inputdir outputdir vmin vmax histogramOption
@@ -41,8 +37,23 @@ python processNGB.py ../infpx-mov/vidfolder/ ./out6/ .1 .8 1
 
 has VMIN=.1, VMAX=.8, and includes the histogram option.
 
-- then, recombine the extracted frames into a movie:
+
+## Processing a video file
+
+In order to process video files, first, extract all the video frames and place them into a folder:
 
 ``` 
-ffmpeg -qscale 5 -i ./NDVIFolder/ndvi_image-%04d.png movie.mp4
+ffmpeg -i inputMovie.avi  -f image2 ./vidImages/image-%04d.png
+```
+
+Then, run the python script as above to convert all of the images in the resultant output folder to NDVI.  In the above example, we might run:
+
+```
+python processNGB.py ../vidImages/ ./NDVIOut/ .1 .8 1
+```
+
+Finally, recombine the extracted frames into a movie:
+
+``` 
+ffmpeg -qscale 5 -i ./NDVIOut/ndvi_image-%04d.png movie.mp4
 ```
