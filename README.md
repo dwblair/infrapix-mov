@@ -15,7 +15,6 @@ ffmpeg -i inputMovie.avi  -f image2 ./outFolder/image-%04d.png
 
 ```
 python processNGB.py inputdir outputdir vmin vmax histogramOption
-
 ```
 
 - INPUTDIR: the input directory of images -- only the images you want to process.
