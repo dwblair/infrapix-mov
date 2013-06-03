@@ -1,11 +1,21 @@
 infrapix-mov
 ============
 
-converting infragram vid files to NDVI
+The included script, "processNGB.py", will take one or more NGB images from a user-specified input directory and generate NDVI imagery in the user-specified output directory.
 
-(Note: check the below ffmpeg commands for accuracy, may need to be modified / corrected)
+Note, if you'd like to process NGB files instead, you can comment out the line that reads: 
 
-- first, extract all the frames into a folder:
+```
+imgR, imgB, imgG = img.split() #get channels from NGB
+```
+
+and uncomment the line that reads:
+
+```
+imgR, imgG, imgB = img.split() #get channels from NBG
+```
+
+In order to process video files, first, extract all the frames into a folder:
 
 ``` 
 ffmpeg -i inputMovie.avi  -f image2 ./outFolder/image-%04d.png
